@@ -7,7 +7,7 @@ export const Footer = () => {
     <footer className="bg-foreground/5 border-t border-border">
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
-          {/* Brand */}
+          {/* Brand fff*/}
           <div className="space-y-4">
             <h3 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               PISYS
