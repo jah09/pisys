@@ -10,19 +10,21 @@ jobs:
   create-pr:
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       pull-requests: write
-      contents: read
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: 🔁 Create or Update Pull Request to Dev
+      - name: Create or Update Pull Request to Dev
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }} 
           base: dev
           branch: ${{ github.ref_name }}
           title: "Auto PR: ${{ github.ref_name }} → dev"
-          body: "🤖 This PR was automatically created when `${{ github.ref_name }}` was pushed. Please review and merge manually."
+          body: |
+            🤖 Auto PR created from `${{ github.ref_name }}` to `dev`.
+            Please review and approve manually.
           draft: false
-          delete-branch: false  
+          delete-branch: false
