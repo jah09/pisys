@@ -2,29 +2,47 @@ name: Auto PR to Dev
 
 on:
   push:
-    branches-ignore:
-      - dev
-      - main
+    branches:
+      - "**"
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  create-pr:
+  auto-pr:
+    # Skip if branch is main or dev
+    if: github.ref_name != 'main' && github.ref_name != 'dev'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Create or Update Pull Request to Dev
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }} 
-          base: dev
-          branch: ${{ github.ref_name }}
-          title: "Auto PR: ${{ github.ref_name }} → dev"
-          body: |
-            🤖 Auto PR created from `${{ github.ref_name }}` to `dev`.
-            Please review and approve manually.
-          draft: false
-          delete-branch: false
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+
+          echo "🔍 Checking for existing PR from branch: $BRANCH → dev"
+
+          EXISTING_PR=$(gh pr list \
+            --base dev \
+            --head "$BRANCH" \
+            --json number --jq '.[0].number' || true)
+
+          if [ -n "$EXISTING_PR" ]; then
+            echo "✅ PR #$EXISTING_PR already exists for branch $BRANCH. Updating..."
+            gh pr edit "$EXISTING_PR" \
+              --title "$COMMIT_MSG" \
+              --body "This PR was automatically updated by GitHub Actions."
+          else
+            echo "🚀 Creating a new PR for branch $BRANCH → dev"
+            gh pr create \
+              --base dev \
+              --head "$BRANCH" \
+              --title "$COMMIT_MSG" \
+              --body "This pull request was automatically created by GitHub Actions."
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
