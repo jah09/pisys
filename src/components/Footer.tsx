@@ -49,7 +49,7 @@ export const Footer = () => {
                   href="#download"
                   className="hover:text-primary transition-colors"
                 >
-                  Download
+                  Downloads
                 </a>
               </li>
               <li>
