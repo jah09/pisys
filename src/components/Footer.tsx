@@ -2,7 +2,7 @@ import { Instagram, Twitter, Mail } from "lucide-react";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
-
+  console.log("test1231312")
   return (
     <footer className="bg-foreground/5 border-t border-border">
       <div className="container mx-auto px-4 py-12">
@@ -49,7 +49,7 @@ export const Footer = () => {
                   href="#download"
                   className="hover:text-primary transition-colors"
                 >
-                  Download
+                  Downloads
                 </a>
               </li>
               <li>
